@@ -36,10 +36,11 @@ class User {
     const user = result.rows[0];
 
     if (!result.rows[0]) {
-      throw new ExpressError(`No such user: ${username}`, 404);
+      throw new ExpressError(`No such user: ${username}`, 400);
     }
 
-    return await bcrypt.compare(password, user.password) && user 
+    const login = await bcrypt.compare(password, user.password);
+    return login && user;
   }
 
   /** Update last_login_at for user */
@@ -66,6 +67,10 @@ class User {
       `SELECT username, first_name, last_name
          FROM users`
     );
+
+    if (!result.rows[0]) {
+      throw new ExpressError(`No users at all!`, 404);
+    }
 
     return result.rows;
   }
