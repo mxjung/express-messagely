@@ -83,6 +83,8 @@ describe("User Routes Test", function () {
       expect(response.statusCode).toBe(200);
       expect(response.body.users.length).toEqual(2);
       });
+
+      // nest next test under same describe
   });
 
   /** GET / - Can not get list of users if you are not logged in
@@ -164,8 +166,39 @@ describe("User Routes Test", function () {
       });
   });
 
+  /** GET /:username/from - get messages from user
+   *
+   * => {messages: [{id,
+   *                 body,
+   *                 sent_at,
+   *                 read_at,
+   *                 to_user: {username, first_name, last_name, phone}}, ...]}
+   *
+   **/
 
+  describe("GET /users/:username/from", function () {
+    test("get messages from user if you are a valid user", async function () {
 
+      let response = await request(app)
+        .get("/users/test1/from")
+        .send({ _token: testUserToken});
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.messages.length).toEqual(2);
+      expect(response.body.messages[1].body).toEqual('oh snap hello again!');
+      });
+  });
+
+  describe("GET /users/:username/from", function () {
+    test("get messages from user if you are a valid user", async function () {
+
+      let response = await request(app)
+        .get("/users/test2/from")
+        .send({ _token: testUserToken});
+
+      expect(response.statusCode).toBe(401);
+      });
+  });
 
 });
 

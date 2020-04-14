@@ -55,7 +55,7 @@ router.post('/',
     try {
       const {to_username, body} = req.body;
       const from_username = req.user.username;
-      const message = await Message.create(from_username, to_username, body);
+      const message = await Message.create({from_username, to_username, body});
 
       return res.json({ message });
 
@@ -84,7 +84,7 @@ router.post('/:id/read',
       const toUser = message.to_user.username;
 
       if (currUser !== toUser) {
-        throw new ExpressError("Wrong User, You cant read this", 400);        
+        throw new ExpressError("Wrong User, You cant read this", 401);        
       }
 
       const readMessage = await Message.markRead(id);
